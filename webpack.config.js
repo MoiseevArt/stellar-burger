@@ -3,7 +3,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
-module.exports = {
+const config = {
   entry: path.resolve(__dirname, './src/index.tsx'),
   module: {
     rules: [
@@ -54,7 +54,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new Dotenv()
+    new Dotenv({
+      path: './.env.example'
+    })
   ],
   resolve: {
     extensions: [
@@ -83,12 +85,23 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    clean: true
   },
   devServer: {
-    static: path.join(__dirname, './dist'),
+    static: {
+      directory: path.join(__dirname, './dist')
+    },
     compress: true,
     historyApiFallback: true,
-    port: 4000
+    port: 4000,
+    hot: true,
+    open: true,
+    client: {
+      overlay: true,
+      progress: true
+    }
   }
 };
+
+module.exports = config;

@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Middleware, AnyAction } from '@reduxjs/toolkit';
 
 import {
   TypedUseSelectorHook,
@@ -6,14 +6,28 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const rootReducer = () => {}; // Заменить на импорт настоящего редьюсера
+import { rootReducer } from './rootReducer';
+
+const logger: Middleware = (store) => (next) => (action: unknown) => {
+  if (process.env.NODE_ENV === 'development') {
+    const typedAction = action as AnyAction;
+    console.group(typedAction.type);
+    console.info('dispatching', typedAction);
+    const result = next(action);
+    console.log('next state', store.getState());
+    console.groupEnd();
+    return result;
+  }
+  return next(action);
+};
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
