@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, SyntheticEvent, useState, useEffect } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import { register } from '../../services/slices/userSlice';
@@ -13,20 +13,23 @@ export const Register: FC = () => {
   const navigate = useNavigate();
   const error = useSelector((state) => state.userData.error);
   const user = useSelector((state) => state.userData.user);
+  const isAuthChecked = useSelector((state) => state.userData.isAuthChecked);
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  useEffect(() => {
+    if (user && isAuthChecked) {
+      navigate('/');
+    }
+  }, [user, isAuthChecked, navigate]);
+
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(
+    await dispatch(
       register({
         email: email,
         name: userName,
         password: password
       })
     );
-
-    if (!error && user) {
-      navigate('/');
-    }
   };
 
   return (

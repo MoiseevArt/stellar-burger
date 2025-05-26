@@ -1,5 +1,5 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import * as ReactDOMClient from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -8,22 +8,19 @@ import store from './services/store';
 
 import './index.css';
 
-const ROOT_ELEMENT_ID = 'root';
+const rootElement = document.getElementById('root') as HTMLElement;
+const root = ReactDOMClient.createRoot(rootElement);
 
-const container = document.getElementById(ROOT_ELEMENT_ID);
-
-if (!container) {
-  throw new Error(`Root element with id "${ROOT_ELEMENT_ID}" not found`);
-}
-
-const root = createRoot(container);
+const AppWithProviders = () => (
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
+);
 
 root.render(
-  <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
-  </StrictMode>
+  <React.StrictMode>
+    <AppWithProviders />
+  </React.StrictMode>
 );

@@ -15,16 +15,22 @@ const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    addConstructorItem: (state, action: PayloadAction<TIngredient>) => {
-      const ingredient: TConstructorIngredient = {
-        ...action.payload,
-        id: nanoid()
-      };
+    addConstructorItem: {
+      prepare: (ingredient: TIngredient) => {
+        const newIngredient: TConstructorIngredient = {
+          ...ingredient,
+          id: nanoid()
+        };
+        return { payload: newIngredient };
+      },
+      reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+        const ingredient = action.payload;
 
-      if (ingredient.type === 'bun') {
-        state.bun = ingredient;
-      } else {
-        state.ingredients.push(ingredient);
+        if (ingredient.type === 'bun') {
+          state.bun = ingredient;
+        } else {
+          state.ingredients.push(ingredient);
+        }
       }
     },
     removeConstructorItem: (state, action: PayloadAction<string>) => {
@@ -38,12 +44,12 @@ const burgerConstructorSlice = createSlice({
     ) => {
       const { index, move } = action.payload;
 
-      if (move === 'up') {
+      if (move === 'up' && index > 0) {
         [state.ingredients[index], state.ingredients[index - 1]] = [
           state.ingredients[index - 1],
           state.ingredients[index]
         ];
-      } else if (move === 'down') {
+      } else if (move === 'down' && index < state.ingredients.length - 1) {
         [state.ingredients[index], state.ingredients[index + 1]] = [
           state.ingredients[index + 1],
           state.ingredients[index]
@@ -58,11 +64,11 @@ const burgerConstructorSlice = createSlice({
       const quantities: { [key: string]: number } = {};
       const { bun, ingredients } = state;
       if (bun) {
-        quantities[bun.id] = (quantities[bun.id] || 0) + 2;
+        quantities[bun._id] = (quantities[bun._id] || 0) + 2;
       }
 
       ingredients.forEach((ingredient) => {
-        quantities[ingredient.id] = (quantities[ingredient.id] || 0) + 1;
+        quantities[ingredient._id] = (quantities[ingredient._id] || 0) + 1;
       });
 
       return quantities;

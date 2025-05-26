@@ -10,16 +10,17 @@ export const ForgotPassword: FC = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     setError(null);
-    forgotPasswordApi({ email })
-      .then(() => {
-        localStorage.setItem('resetPassword', 'true');
-        navigate('/reset-password', { replace: true });
-      })
-      .catch((err) => setError(err));
+    try {
+      await forgotPasswordApi({ email });
+      localStorage.setItem('resetPassword', 'true');
+      navigate('/reset-password', { replace: true });
+    } catch (err) {
+      setError(err as Error);
+    }
   };
 
   return (

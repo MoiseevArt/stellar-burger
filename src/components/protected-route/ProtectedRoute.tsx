@@ -1,19 +1,17 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from '../../services/store';
-import { Navigate } from 'react-router';
-import { Preloader } from '../ui/preloader';
+import { Login } from '@pages';
 import { TProtectedRouteProps } from './type';
 
 export const ProtectedRoute = ({
   children,
   onlyUnAuth = false
 }: TProtectedRouteProps) => {
-  const isAuthChecked = useSelector((state) => state.userData.isAuthChecked);
-  const user = useSelector((state) => state.userData.user);
+  const { isAuthChecked, user } = useSelector((state) => state.userData);
   const location = useLocation();
 
   if (!isAuthChecked) {
-    return <Preloader />;
+    return <Login />;
   }
 
   if (!onlyUnAuth && !user) {
@@ -24,5 +22,5 @@ export const ProtectedRoute = ({
     return <Navigate to='/' />;
   }
 
-  return children ? children : <Outlet />;
+  return children || <Outlet />;
 };
