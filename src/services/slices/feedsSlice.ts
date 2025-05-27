@@ -26,7 +26,7 @@ const feedsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFeeds.rejected, (state, action) => {
-        console.log('getFeeds rejected:', action.error);
+        // console.log('getFeeds rejected:', action.error);
       })
       .addCase(getFeeds.fulfilled, (state, action) => {
         state.orders = action.payload.orders;

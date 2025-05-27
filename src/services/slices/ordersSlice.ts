@@ -23,7 +23,7 @@ const ordersSlice = createSlice({
     builder
       .addCase(getOrders.pending, (state) => {})
       .addCase(getOrders.rejected, (state, action) => {
-        // is it ok to add a console.log about error?
+        // обработка ошибки
       })
       .addCase(getOrders.fulfilled, (state, action) => {
         state.orders = action.payload;

@@ -10,16 +10,15 @@ export const ResetPassword: FC = () => {
   const [token, setToken] = useState('');
   const [error, setError] = useState<Error | null>(null);
 
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setError(null);
-    try {
-      await resetPasswordApi({ password, token });
-      localStorage.removeItem('resetPassword');
-      navigate('/login', { replace: true });
-    } catch (err) {
-      setError(err as Error);
-    }
+    resetPasswordApi({ password, token })
+      .then(() => {
+        localStorage.removeItem('resetPassword');
+        navigate('/login');
+      })
+      .catch((err) => setError(err));
   };
 
   useEffect(() => {

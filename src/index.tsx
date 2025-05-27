@@ -1,26 +1,19 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
+import App from './components/app/app';
 import { Provider } from 'react-redux';
+import store from './services/store';
 import { BrowserRouter } from 'react-router-dom';
 
-import App from './components/app/app';
-import store from './services/store';
-
-import './index.css';
-
-const rootElement = document.getElementById('root') as HTMLElement;
-const root = ReactDOMClient.createRoot(rootElement);
-
-const AppWithProviders = () => (
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>
-);
+const container = document.getElementById('root') as HTMLElement;
+const root = ReactDOMClient.createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <AppWithProviders />
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
